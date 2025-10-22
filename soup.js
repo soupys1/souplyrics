@@ -6,6 +6,7 @@ const port = 3000;
 
 
 const { Client, GatewayIntentBits } = require('discord.js');
+const { getLyrics } = require('genius-lyrics-api');
 
 const client = new Client({
   intents: [
@@ -44,23 +45,20 @@ async function fetchLyrics(query, message) {
     message.reply('please provide the song in "Artist-Title" format!');
     return;
   }
-  //fetching the lyrics 
+  const options = {
+	apiKey: 'GAPI',
+	title: title.trim(),
+	artist: artist.trim(),
+	optimizeQuery: true
+    };
     
-    fetch(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(title)}`)
-        .then(res => {
-            if(!res.ok){
-                throw new Error('Lyrics not found');
-            }else{
-                return res.json();
-            }
-        })
-        .then(data => {
-            message.reply(data.lyrics);
-        })
-        .catch(err =>{
-            message.reply('Lyrics not found!');
-        });
-    
+    lyrics = getLyrics(options).then((lyrics) => console.log(lyrics));
+
+    if(!lyrics){
+        message.reply('Lyrics not found!');
+    }else{
+        message.reply(lyrics);
+    }
     
 }
 app.get('/', (req, res) => {
