@@ -1,4 +1,9 @@
 require('dotenv').config();
+const express = require('express');
+const app = express();
+const port = 3000;
+
+
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
@@ -58,6 +63,12 @@ async function fetchLyrics(query, message) {
     
     
 }
+app.get('/', (req, res) => {
+  res.send('Bot is alive!');
+});
 
+app.listen(port, () => {
+  console.log(`Keep-alive server running on port ${port}`);
+});
 client.login(process.env.BOTTOKEN);
 
